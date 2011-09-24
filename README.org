@@ -1,0 +1,48 @@
+* Bluetooth socket support for SBCL
+
+** Supported Platforms
+   SBCL Common Lisp implementation on Linux and Windows.
+
+** Usage
+*** Loading the System
+: (asdf:load-system :sb-bluetooth)
+
+*** Opening a Bluetooth (RFCOMM) connection
+: (sb-bluetooth:open-rfcomm-channel "de:ad:be:af:00:01" 12)
+    In the example above, connection is opened using an RFCOMM channel number,
+    and the device address designator is a string.
+
+    Device address can also be given as a sequence of octets:
+: (sb-bluetooth:open-rfcomm-channel #(1 2 3 4 5 6) 12)
+
+    MS Windows may find appropriate RFCOMM channel for a specific service in
+    target device's SDP database:
+    : #+(win32)
+: (sb-bluetooth:open-rfcomm-channel "de:ad:be:af:00:01" :obex-object-push)
+
+    =:OBEX-OBJECT-PUSH= is resolved into appropriate UUID. The latter could
+    be given in one of the following forms as well:
+    : "00001105,0000,1000,80,00,00,80,5F,9B,34,FB" ; string
+    : #(#x5 #x11 #x0 #x0 #x0 #x0 #x0 #x10 #x80 #x0 #x0 #x80 #x5F #x9B #x34 #xFB) ; octet sequence
+
+    On Linux, use sdptool to find out RFCOMM channel numbers supported by your
+    device.
+
+*** Standard Service Classes
+    * =:dialup-networking, :dun= :: modem connection for data calls 
+    * =:serial-port= :: generic serial port communication
+    * =:obex-object-push= :: OBEX for PUSH object transfer (PC->device)
+    * =:obex-file-transfer= :: OBEX protocol for FS access
+                      
+*** Defining UUID Designators
+    It's possible to define more UUID designators using
+    =(DEF-BLUETOOTH-SERVICE-CLASS)= macro. See [[file:early-uuid.lisp]] for an
+    example.
+
+*** Making a Socket
+    Socket object may be created without immediate connection:
+: (sb-bluetooth:make-bluetooth-socket)
+    Miscellaneous facilities of SB-BSD-SOCKET should be used for other
+    operations on resulting socket object.
+
+-------------
