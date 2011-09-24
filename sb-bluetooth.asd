@@ -5,4 +5,7 @@
                (:file "early-uuid")
                (:file "uuid-data")
                (:file "rfcomm"))
-  :depends-on (:sb-bsd-sockets))
+  :depends-on (:sb-bsd-sockets)
+  :maintainer "Anton Kovalenko <anton.kovalenko@siftsoft.com>"
+  :licence "MIT-style"
+  :description "Bluetooth stream socket support for SBCL")
